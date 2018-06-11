@@ -1,5 +1,6 @@
 package com.devandroid.fbatista.musicmachine;
 
+import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -18,6 +19,10 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         mDownloadButton = findViewById(R.id.btn_download);
+
+        final DownloadThread thread = new DownloadThread();
+        thread.setName("Download Thread");
+        thread.start();
         
         mDownloadButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -26,14 +31,21 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-                DownloadThread thread = new DownloadThread();
-                thread.setName("Download Thread");
-                thread.start();
+
+
+                //Send messages to handler for processing
+                for(String song : Playlist.songs){
+                    Message message = Message.obtain();
+                    message.obj = song;
+                    thread.mHandler.sendMessage(message);
+                }
 
 
             }
         });
     }
+
+
 
     
 
